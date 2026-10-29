@@ -4,3 +4,38 @@
 @media(max-width:1100px){.content{padding:26px 24px}.topbar{padding:0 24px}.sidebar{width:225px}.main{margin-left:225px}.quick-links{grid-template-columns:1fr}.quick-links button{padding:8px}.quick-panel{min-width:0}.bottom-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:800px){.sidebar{transform:translateX(-100%);transition:transform .25s;width:260px}.sidebar.open{transform:translateX(0)}.mobile-close{display:block}.scrim{display:block;position:fixed;inset:0;background:#0009;z-index:4}.main{margin-left:0}.hamburger{display:block;padding:0;align-items:center}.topbar{height:60px;padding:0 18px}.content{padding:24px 18px}.main-grid{grid-template-columns:1fr}.goal-panel{display:grid;grid-template-columns:1fr 1fr;align-items:center}.goal-panel .panel-head{grid-column:1/-1}.goal-list{padding-left:10px}.donut-wrap{padding:10px}.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.bottom-grid{grid-template-columns:1fr}.quick-links{grid-template-columns:repeat(3,1fr)}.welcome-row{align-items:flex-start;gap:14px}.welcome-row h1{font-size:22px}.welcome-actions{flex-direction:column}.welcome-actions button{height:33px}.feature-grid{grid-template-columns:1fr}}
 @media(max-width:520px){.topbar{padding:0 13px}.crumb{gap:6px;font-size:10px}.top-actions{gap:8px}.role-switch button{padding:6px 7px}.top-avatar{display:none}.content{padding:20px 13px}.welcome-row{display:block}.welcome-actions{flex-direction:row;margin-top:16px}.welcome-actions button{flex:1}.welcome-row h1{font-size:21px}.stats-grid{gap:8px}.stat-card{padding:12px;min-height:108px}.stat-value{font-size:21px}.stat-top{font-size:9px}.stat-icon{width:27px;height:27px}.stat-foot{gap:4px}.stat-foot small{font-size:8px}.panel{padding:14px}.goal-panel{grid-template-columns:1fr}.goal-panel .panel-head{grid-column:auto}.goal-list{padding:0 5px 5px}.donut-wrap{padding:12px}.quick-links{grid-template-columns:1fr}.quick-links button{padding:10px}.student-hero{padding:20px}.student-hero h2{font-size:23px}.hero-art{padding:0 5px}.hero-ring{width:80px;height:80px}.hero-ring svg{width:43px}.hero-progress{width:210px}.student-stats{grid-template-columns:repeat(2,1fr)}.table-tools{align-items:flex-start;gap:8px;flex-direction:column}.searchbox{width:100%}footer{font-size:8px}}
+
+/* Módulos funcionais FitPulse */
+.searchbox{margin:18px 0;width:min(100%,420px)}
+.searchbox input{min-width:0}
+.feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:18px}
+.action-card{background:#171e1a;border:1px solid #2a352d;border-radius:10px;padding:15px;text-align:left;min-height:115px}
+.action-card b{font:700 12px Manrope;color:#e7eee9}
+.action-card p{font-size:10px;color:#94a197;line-height:1.5;min-height:30px}
+.action-card span{display:flex;align-items:center;color:var(--green);font-size:9px;font-weight:700}
+.review-row{display:flex;align-items:center;gap:10px;padding:15px 0;border-bottom:1px solid var(--line);font-size:11px;color:#aab5ad}
+.review-row svg{color:var(--green);width:18px}.review-row span{flex:1}.review-row b{font-size:15px;color:#e9eeeb}
+.detail-card{margin-top:20px;padding:17px;border:1px solid #334237;background:#171e1a;border-radius:10px}
+.detail-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0}
+.detail-grid div{padding:11px;background:#202923;border-radius:8px}
+.detail-grid small,.detail-grid b{display:block}.detail-grid small{font-size:9px;color:#849188}.detail-grid b{font-size:12px;margin-top:5px}
+.inline-actions,.record-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.notice{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;margin:18px 0;background:#202b21;border:1px solid #344632;border-radius:9px;color:#b8c7b0;font-size:10px;line-height:1.5}
+.notice svg{color:var(--green);flex-shrink:0}
+.record{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:16px 3px;border-bottom:1px solid var(--line)}
+.record:last-child{border-bottom:0}.record b{font-size:11px}.record p{font-size:10px;color:#93a096;margin:5px 0}.record small{display:block;color:#9eaaa1;font-size:10px;margin-top:5px}
+.record-actions{justify-content:flex-end}.record-actions .btn-secondary{height:31px;font-size:9px}
+.click-row{cursor:pointer}.click-row:hover{background:#1b241e}
+.modal-large{width:min(100%,650px);max-height:90vh;overflow:auto}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 13px}
+.field{display:block;font-size:10px;color:#b7c2b9;margin:10px 0}
+.field input,.field select,.field textarea{display:block;width:100%;min-height:38px;margin-top:7px;padding:9px 11px;border-radius:7px;border:1px solid #344139;background:#0f1511;color:#e7eee9;outline:none;font:inherit;font-size:11px}
+.field textarea{min-height:76px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#8fbe5a}
+.field.wide{grid-column:1/-1}
+.modal-large .modal-actions{position:sticky;bottom:-23px;background:#151c18;padding:13px 0 0}
+.exercise{display:flex;align-items:center;gap:14px}.exercise b{flex:1}
+.toast{gap:10px}.toast span{font-size:10px;flex:1}
+.empty{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:5px}
+.empty svg{color:#809078}
+@media(max-width:700px){.detail-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.record{align-items:flex-start;flex-direction:column}.record-actions{justify-content:flex-start}.feature-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.field.wide{grid-column:auto}.modal-large{padding:17px;max-height:94vh}.inline-actions{display:grid;grid-template-columns:1fr 1fr}}
