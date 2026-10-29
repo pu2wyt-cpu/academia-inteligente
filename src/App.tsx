@@ -14,26 +14,50 @@ const tabs:Tab[]=['Visão geral','Alunos','Treinos','Nutrição','Avaliações']
 const goals=['Emagrecer','Ganhar massa muscular','Força','Emagrecer ganhando massa']
 const seed:Student[]=[{id:'s1',name:'Mariana Costa',age:29,height:165,weight:64.2,experience:'Intermediário',goal:'Ganhar massa muscular',days:4,minutes:60,equipment:'Academia completa',limitations:'',status:'Ativo',created:'2026-10-29'},{id:'s2',name:'Rafael Mendes',age:36,height:178,weight:91.5,experience:'Iniciante',goal:'Emagrecer',days:3,minutes:45,equipment:'Academia completa',limitations:'',status:'Ativo',created:'2026-10-29'}]
 const read=<T,>(key:string,fallback:T):T=>{try{const v=localStorage.getItem(key);return v?JSON.parse(v) as T:fallback}catch{return fallback}}
-function Dashboard(){
+function Dashboard({gymId,userId}:{gymId:string;userId:string}){
  const [tab,setTab]=useState<Tab>('Visão geral'),[role,setRole]=useState<'Administrador'|'Aluno'>('Administrador')
- const [students,setStudents]=useState<Student[]>(()=>read('fp_students',seed))
+ const [students,setStudents]=useState<Student[]>([])
  const [workouts,setWorkouts]=useState<Workout[]>(()=>read('fp_workouts',[]))
  const [diets,setDiets]=useState<Diet[]>(()=>read('fp_diets',[]))
  const [assessments,setAssessments]=useState<Assessment[]>(()=>read('fp_assessments',[]))
  const [search,setSearch]=useState(''),[notice,setNotice]=useState(''),[showStudent,setShowStudent]=useState(false)
  const [showWorkout,setShowWorkout]=useState(false),[showDiet,setShowDiet]=useState(false),[showAssessment,setShowAssessment]=useState(false)
- const [selected,setSelected]=useState('s1'),[done,setDone]=useState<string[]>([])
+ const [selected,setSelected]=useState(''),[done,setDone]=useState<string[]>([])
+ const [studentsLoading,setStudentsLoading]=useState(true),[studentsError,setStudentsError]=useState('')
  const [studentForm,setStudentForm]=useState({name:'',age:'',height:'',weight:'',experience:'Iniciante',goal:goals[0],days:'3',minutes:'60',equipment:'Academia completa',limitations:''})
  const [workForm,setWorkForm]=useState({studentId:'s1',title:'Treino A',focus:'Corpo inteiro',days:'Segunda, Quarta e Sexta',exercise:'Agachamento',sets:'3',reps:'10-12',rest:'60',load:''})
  const [dietForm,setDietForm]=useState({studentId:'s1',title:'Plano alimentar',meal:'Café da manhã',time:'07:00',description:'',notes:''})
  const [assForm,setAssForm]=useState({studentId:'s1',weight:'',waist:'',chest:'',hip:'',arm:'',thigh:'',notes:''})
- useEffect(()=>{localStorage.setItem('fp_students',JSON.stringify(students))},[students])
+ useEffect(()=>{
+   let alive=true
+   const loadStudents=async()=>{
+     if(!supabase){if(alive){setStudentsError('Conexão com o banco indisponível.');setStudentsLoading(false)}return}
+     setStudentsLoading(true);setStudentsError('')
+     const {data,error}=await supabase.from('students').select('*').eq('gym_id',gymId).eq('active',true).order('created_at',{ascending:false})
+     if(!alive)return
+     if(error){setStudentsError('Não foi possível carregar os alunos do banco. Verifique as permissões e tente novamente.')}
+     else{
+       const rows=(data||[]).map((row:any):Student=>({id:row.id,name:row.full_name,age:row.age??0,height:Number(row.height_cm??0),weight:Number(row.weight_kg??0),experience:row.experience,goal:row.goal,days:row.training_days??0,minutes:row.session_minutes??0,equipment:row.equipment??'',limitations:row.limitations??'',status:row.active?'Ativo':'Inativo',created:String(row.created_at||'').slice(0,10)}))
+       setStudents(rows);setSelected(current=>rows.some(s=>s.id===current)?current:(rows[0]?.id||''))
+     }
+     setStudentsLoading(false)
+   }
+   loadStudents()
+   return ()=>{alive=false}
+ },[gymId])
  useEffect(()=>{localStorage.setItem('fp_workouts',JSON.stringify(workouts))},[workouts])
  useEffect(()=>{localStorage.setItem('fp_diets',JSON.stringify(diets))},[diets])
  useEffect(()=>{localStorage.setItem('fp_assessments',JSON.stringify(assessments))},[assessments])
  const filtered=useMemo(()=>students.filter(s=>(s.name+' '+s.goal).toLowerCase().includes(search.toLowerCase())),[students,search])
  const current=students.find(s=>s.id===selected)||students[0]
- const addStudent=()=>{if(!studentForm.name.trim()||!studentForm.age||!studentForm.height||!studentForm.weight)return;const s:Student={...studentForm,id:crypto.randomUUID(),age:+studentForm.age,height:+studentForm.height,weight:+studentForm.weight,days:+studentForm.days,minutes:+studentForm.minutes,status:'Ativo',created:new Date().toISOString().slice(0,10)};setStudents(p=>[s,...p]);setSelected(s.id);setStudentForm({name:'',age:'',height:'',weight:'',experience:'Iniciante',goal:goals[0],days:'3',minutes:'60',equipment:'Academia completa',limitations:''});setShowStudent(false);setTab('Alunos')}
+ const addStudent=async()=>{
+   if(!studentForm.name.trim()||!studentForm.age||!studentForm.height||!studentForm.weight)return
+   if(!supabase)return
+   const {data,error}=await supabase.from('students').insert({gym_id:gymId,full_name:studentForm.name.trim(),age:+studentForm.age,height_cm:+studentForm.height,weight_kg:+studentForm.weight,experience:studentForm.experience,goal:studentForm.goal,training_days:+studentForm.days,session_minutes:+studentForm.minutes,equipment:studentForm.equipment,limitations:studentForm.limitations,active:true}).select('*').single()
+   if(error){setNotice('Não foi possível salvar o aluno no banco. Verifique sua conexão e as permissões.');return}
+   const s:Student={id:data.id,name:data.full_name,age:data.age??0,height:Number(data.height_cm??0),weight:Number(data.weight_kg??0),experience:data.experience,goal:data.goal,days:data.training_days??0,minutes:data.session_minutes??0,equipment:data.equipment??'',limitations:data.limitations??'',status:'Ativo',created:String(data.created_at||'').slice(0,10)}
+   setStudents(p=>[s,...p]);setSelected(s.id);setStudentForm({name:'',age:'',height:'',weight:'',experience:'Iniciante',goal:goals[0],days:'3',minutes:'60',equipment:'Academia completa',limitations:''});setShowStudent(false);setTab('Alunos');setNotice('Aluno salvo no banco de dados da NEXORA FIT.')
+ }
  const addWorkout=()=>{if(!workForm.title.trim()||!workForm.exercise.trim())return;setWorkouts(p=>[{id:crypto.randomUUID(),studentId:workForm.studentId,title:workForm.title,focus:workForm.focus,days:workForm.days,exercises:[{name:workForm.exercise,sets:+workForm.sets,reps:workForm.reps,rest:+workForm.rest,load:workForm.load}],approved:false},...p]);setShowWorkout(false);setNotice('Treino salvo como rascunho. Revise e aprove antes de atribuir.')}
  const addDiet=()=>{if(!dietForm.description.trim())return;setDiets(p=>[{id:crypto.randomUUID(),studentId:dietForm.studentId,title:dietForm.title,meals:[{name:dietForm.meal,time:dietForm.time,description:dietForm.description,notes:dietForm.notes}],approved:false,author:'Administrador'},...p]);setShowDiet(false);setNotice('Plano salvo como rascunho para revisão profissional.')}
  const addAssessment=()=>{if(!assForm.weight)return;setAssessments(p=>[{id:crypto.randomUUID(),studentId:assForm.studentId,date:new Date().toLocaleDateString('pt-BR'),weight:+assForm.weight,waist:assForm.waist,chest:assForm.chest,hip:assForm.hip,arm:assForm.arm,thigh:assForm.thigh,notes:assForm.notes},...p]);const w=+assForm.weight;setStudents(p=>p.map(s=>s.id===assForm.studentId?{...s,weight:w}:s));setShowAssessment(false);setNotice('Avaliação registrada.')}
@@ -71,6 +95,7 @@ function App(){
  const [busy,setBusy]=useState(false)
  const [error,setError]=useState('')
  const [authorized,setAuthorized]=useState<boolean|null>(null)
+ const [gymId,setGymId]=useState('')
  useEffect(()=>{
    if(!supabase){setChecking(false);return}
    let alive=true
@@ -81,8 +106,8 @@ function App(){
  useEffect(()=>{
    if(!supabase||!session){setAuthorized(null);return}
    let alive=true
-   supabase.from('gym_members').select('id').eq('user_id',session.user.id).eq('role','admin').eq('active',true).limit(1)
-     .then(({data,error})=>{if(alive)setAuthorized(!error&&Boolean(data?.length))})
+   supabase.from('gym_members').select('gym_id').eq('user_id',session.user.id).eq('role','admin').eq('active',true).limit(1)
+     .then(({data,error})=>{if(alive){setAuthorized(!error&&Boolean(data?.length));setGymId(data?.[0]?.gym_id||'')}})
    return ()=>{alive=false}
  },[session])
  const signIn=async(e:React.FormEvent)=>{
@@ -105,6 +130,6 @@ function App(){
  </form></div>
  if(authorized===null)return <div className="auth-screen"><div className="auth-card">Validando permissões da academia...</div></div>
  if(!authorized)return <div className="auth-screen"><div className="auth-card"><LockKeyhole size={28}/><h1>Acesso não autorizado</h1><p>Esta conta não possui vínculo ativo de administrador na NEXORA FIT.</p><button className="btn-secondary auth-submit" onClick={signOut}>Sair</button></div></div>
- return <><div className="auth-userbar"><span>{session.user.email}</span><button onClick={signOut}><LogOut size={14}/> Sair</button></div><Dashboard/></>
+ return <><div className="auth-userbar"><span>{session.user.email}</span><button onClick={signOut}><LogOut size={14}/> Sair</button></div><Dashboard gymId={gymId} userId={session.user.id}/></>
 }
 export default App
