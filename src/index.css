@@ -39,3 +39,21 @@
 .empty{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:5px}
 .empty svg{color:#809078}
 @media(max-width:700px){.detail-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.record{align-items:flex-start;flex-direction:column}.record-actions{justify-content:flex-start}.feature-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.field.wide{grid-column:auto}.modal-large{padding:17px;max-height:94vh}.inline-actions{display:grid;grid-template-columns:1fr 1fr}}
+
+
+/* Autenticação NEXORA FIT */
+.auth-screen{min-height:100vh;display:grid;place-items:center;padding:22px;background:radial-gradient(ellipse at 50% 15%,#1c2b1d 0%,#0b0e0d 58%)}
+.auth-card{width:min(100%,410px);padding:30px;background:#121715;border:1px solid #2d3b30;border-radius:16px;box-shadow:0 24px 80px #0008}
+.auth-card h1{font:800 27px Manrope,sans-serif;letter-spacing:-.8px;margin:10px 0 7px;color:#eef4ef}
+.auth-card>p{font-size:11px;line-height:1.6;color:#98a69b;margin:0 0 22px}
+.auth-mark{width:48px;height:48px;border-radius:13px;background:var(--green);color:#15200e;display:grid;place-items:center;margin-bottom:20px}
+.auth-card label{display:block;color:#b7c2b9;font-size:10px;margin:15px 0}
+.auth-card input{display:block;width:100%;height:42px;margin-top:7px;padding:0 12px;border-radius:8px;border:1px solid #344139;background:#0c120e;color:#eef4ef;outline:none;font-size:12px}
+.auth-card input:focus{border-color:var(--green)}
+.auth-submit{width:100%;margin-top:12px}
+.auth-card>small{display:block;color:#78877d;font-size:9px;line-height:1.5;text-align:center;margin-top:15px}
+.auth-error{padding:10px 12px;border-radius:8px;background:#392522;color:#ffb4a5;font-size:10px}
+.auth-userbar{position:fixed;right:22px;bottom:18px;z-index:15;display:flex;align-items:center;gap:12px;padding:8px 10px 8px 13px;background:#151d17;border:1px solid #354438;border-radius:9px;box-shadow:0 8px 28px #0007}
+.auth-userbar span{font-size:10px;color:#aebbb1}
+.auth-userbar button{display:flex;align-items:center;gap:5px;border:0;border-radius:6px;padding:7px 9px;background:#263528;color:var(--green);font-size:10px}
+@media(max-width:520px){.auth-userbar{right:10px;bottom:10px}.auth-userbar span{max-width:150px;overflow:hidden;text-overflow:ellipsis}}
