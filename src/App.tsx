@@ -42,7 +42,7 @@ function App(){
    <header className="topbar"><div className="crumb"><button className="hamburger" onClick={()=>setMobileOpen(true)}><Menu/></button><span>Workspace</span><ChevronRight size={14}/><b>{title}</b></div><div className="top-actions"><div className="role-switch"><button className={role==='Administrador'?'selected':''} onClick={()=>setRole('Administrador')}>Admin</button><button className={role==='Aluno'?'selected':''} onClick={()=>setRole('Aluno')}>Aluno</button></div><button className="icon-btn notification" onClick={()=>setShowNotice(!showNotice)}><Bell size={18}/><i/></button><div className="avatar admin top-avatar">AP</div></div></header>
    <div className="content">
     <div className="welcome-row"><div><div className="eyebrow"><span className="live-dot"/> QUARTA-FEIRA, 29 DE OUTUBRO</div><h1>{role==='Aluno'?'Olá, Mariana! 👋':'Bom dia, Alexandre! 👋'}</h1><p>{role==='Aluno'?'Seu progresso é construído um treino de cada vez. Vamos nessa?':'Aqui está o resumo da sua academia hoje.'}</p></div><div className="welcome-actions"><button className="btn-secondary" onClick={()=>setShowNotice(true)}><CalendarDays size={16}/> Ver agenda</button><button className="btn-primary" onClick={()=>setShowNew(true)}><Plus size={17}/> Novo aluno</button></div></div>
-    {role==='Aluno'?<StudentView done={done} setDone={setDone}/>:<>
+    {role==='Aluno'?<StudentView done={done} setDone={setDone}/>:tab==='Visão geral'?<>
     <section className="stats-grid">
      <Stat icon={Users} label="Alunos ativos" value={String(students.length+124)} change="+12,5%" note="vs. mês passado" tone="green"/>
      <Stat icon={Dumbbell} label="Treinos realizados" value="286" change="+8,2%" note="vs. mês passado" tone="green"/>
