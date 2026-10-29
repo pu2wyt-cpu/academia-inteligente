@@ -5,8 +5,9 @@ Aplicação web responsiva para gestão de academia, acompanhamento individual, 
 ## Tecnologias
 - React + TypeScript + Vite
 - Lucide React
+- Supabase JS (cliente preparado)
 - CSS responsivo, tema escuro
-- Persistência local no navegador (localStorage), nesta etapa
+- Persistência local ainda ativa na interface; schema remoto preparado, aguardando configuração das credenciais
 
 ## Módulos implementados
 - Painel administrativo com contadores reais dos registros locais.
@@ -34,11 +35,32 @@ npm run preview
 ```
 
 ## Limitações importantes desta etapa
-Os registros são salvos no navegador atual via localStorage. Ainda não existe banco de dados compartilhado, autenticação real, perfis de acesso seguros, sincronização entre dispositivos, armazenamento de fotos, notificações ou integração com IA. O seletor Admin/Aluno é apenas uma demonstração visual, não um controle de segurança. Não use dados reais sensíveis até a implantação de autenticação e backend seguros.
+Os registros da interface ainda são salvos no navegador via localStorage. O schema SQL com Row Level Security (RLS) e o cliente Supabase foram adicionados, mas o banco remoto ainda não foi provisionado nem conectado à interface. Ainda não existe autenticação ativa, sincronização entre dispositivos, armazenamento de fotos, notificações ou integração com IA. O seletor Admin/Aluno é apenas uma demonstração visual, não um controle de segurança. Não use dados reais sensíveis até a implantação de autenticação e backend seguros.
+
+## Preparar o Supabase
+1. Crie um projeto no Supabase.
+2. No SQL Editor, execute `supabase/migrations/202610290001_initial_schema.sql`.
+3. Copie `.env.example` para `.env.local` e preencha `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` com os valores do painel do Supabase.
+4. No Supabase Auth, habilite o método de e-mail/senha e configure a URL de retorno do domínio publicado.
+5. Crie o primeiro usuário administrador pelo Auth. Depois, no SQL Editor, crie a academia e associe esse usuário como administrador, substituindo os valores:
+
+```sql
+insert into public.gyms (name) values ('Minha Academia') returning id;
+-- Use o UUID retornado como GYM_UUID e o UUID do usuário Auth como AUTH_USER_UUID:
+insert into public.profiles (id, full_name)
+values ('AUTH_USER_UUID', 'Administrador')
+on conflict (id) do update set full_name = excluded.full_name;
+insert into public.gym_members (gym_id, user_id, role)
+values ('GYM_UUID', 'AUTH_USER_UUID', 'admin');
+```
+
+6. Instale dependências e execute `npm run build` para validar a configuração local.
+
+**Atenção:** as credenciais ainda não foram fornecidas nem configuradas no ambiente publicado. Não coloque `service_role` ou qualquer chave secreta no frontend. Somente a chave pública `anon`/publishable pode ser usada no navegador, sempre com RLS ativa.
 
 ## Próximas etapas
-1. Backend e banco de dados (por exemplo, Supabase) com migrações e regras de acesso por perfil.
-2. Autenticação e recuperação de senha; papéis reais de administrador, professor e aluno.
+1. Conectar formulários e telas ao Supabase e migrar os dados do localStorage.
+2. Implementar autenticação e recuperação de senha; papéis reais de administrador, professor e aluno.
 3. Editor avançado com múltiplos exercícios por ficha, biblioteca de exercícios e histórico de cargas.
 4. Histórico e gráficos de evolução física, consentimento e armazenamento seguro de imagens.
 5. Integração de IA para sugestões de treino com validação e aprovação profissional.
