@@ -34,8 +34,10 @@ npm run build
 npm run preview
 ```
 
-## Limitações importantes desta etapa
-Os registros da interface ainda são salvos no navegador via localStorage. O schema SQL com Row Level Security (RLS) e o cliente Supabase foram adicionados, mas o banco remoto ainda não foi provisionado nem conectado à interface. Ainda não existe autenticação ativa, sincronização entre dispositivos, armazenamento de fotos, notificações ou integração com IA. O seletor Admin/Aluno é apenas uma demonstração visual, não um controle de segurança. Não use dados reais sensíveis até a implantação de autenticação e backend seguros.
+## Estado da conexão Supabase
+O cliente Supabase está configurado com a Project URL e a chave pública publishable fornecidas para este projeto. A configuração aceita sobrescrita pelas variáveis `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY`. A chave pública pode estar no frontend; nunca use `sb_secret` ou `service_role` no navegador.
+
+**Importante:** configurar o cliente não significa que o banco já esteja pronto. A migration SQL ainda precisa ser executada no projeto Supabase, e a interface ainda salva os registros em `localStorage`; formulários, autenticação e permissões ainda não foram ligados ao banco remoto. Não use dados reais sensíveis até concluir a integração e validar as políticas RLS.
 
 ## Preparar o Supabase
 1. Crie um projeto no Supabase.
@@ -56,7 +58,7 @@ values ('GYM_UUID', 'AUTH_USER_UUID', 'admin');
 
 6. Instale dependências e execute `npm run build` para validar a configuração local.
 
-**Atenção:** as credenciais ainda não foram fornecidas nem configuradas no ambiente publicado. Não coloque `service_role` ou qualquer chave secreta no frontend. Somente a chave pública `anon`/publishable pode ser usada no navegador, sempre com RLS ativa.
+**Atenção:** a chave pública publishable já está configurada como padrão no cliente deste repositório. Não coloque `service_role` ou qualquer chave secreta no frontend. Somente a chave pública `anon`/publishable pode ser usada no navegador, sempre com RLS ativa.
 
 ## Próximas etapas
 1. Conectar formulários e telas ao Supabase e migrar os dados do localStorage.
